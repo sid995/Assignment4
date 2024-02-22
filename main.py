@@ -1,16 +1,40 @@
-# This is a sample Python script.
-
-# Press Ctrl+F5 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press F9 to toggle the breakpoint.
+import sys
+from calculator import Calculator
+from decimal import Decimal, InvalidOperation
 
 
-# Press the green button in the gutter to run the script.
+def calculate_and_print(a, b, operation_name):
+    operation_mappings = {
+        'add': Calculator.add,
+        'subtract': Calculator.subtract,
+        'multiply': Calculator.multiply,
+        'divide': Calculator.divide
+    }
+
+    # Unified error handling for decimal conversion
+    try:
+        a_decimal, b_decimal = map(Decimal, [a, b])
+        result = operation_mappings.get(operation_name)  # Use get to handle unknown operations
+        if result:
+            print(f"The result of {a} {operation_name} {b} is equal to {result(a_decimal, b_decimal)}")
+        else:
+            print(f"Unknown operation: {operation_name}")
+    except InvalidOperation:
+        print(f"Invalid number input: {a} or {b} is not a valid number.")
+    except ZeroDivisionError:
+        print("Error: Division by zero.")
+    except Exception as e:  # Catch-all for unexpected errors
+        print(f"An error occurred: {e}")
+
+
+def main():
+    if len(sys.argv) != 4:
+        print("Usage: python calculator_main.py <number1> <number2> <operation>")
+        sys.exit(1)
+
+    _, a, b, operation = sys.argv
+    calculate_and_print(a, b, operation)
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    main()
